@@ -82,6 +82,8 @@ import org.schabi.newpipe.extractor.utils.JsonUtils;
 import org.schabi.newpipe.extractor.utils.LocaleCompat;
 import org.schabi.newpipe.extractor.utils.Pair;
 import org.schabi.newpipe.extractor.utils.Parser;
+import org.schabi.newpipe.extractor.utils.SubtitleEtagUtils;
+import org.schabi.newpipe.extractor.utils.SubtitleLastModifiedUtils;
 import org.schabi.newpipe.extractor.utils.Utils;
 
 import java.io.IOException;
@@ -729,6 +731,16 @@ public class YoutubeStreamExtractor extends StreamExtractor {
                         .replaceAll("&fmt=[^&]*", "")
                         // Remove translation language
                         .replaceAll("&tlang=[^&]*", "");
+
+                String remoteSubtitleUrl = cleanUrl + "&fmt=" + format.getSuffix();
+                String etag = SubtitleEtagUtils.getEtag(remoteSubtitleUrl);
+                System.out.println("test00 ETag: " + etag);
+
+                String lastModified = SubtitleLastModifiedUtils.getLastModified(remoteSubtitleUrl);
+                System.out.println("test00 Last-Modified: " + lastModified);
+                String result = SubtitleLastModifiedUtils.conditionalGet(remoteSubtitleUrl, lastModified);
+                //System.out.println("test00 result==" + result);
+                System.out.println("test00 Conditional GET result: " + (result == null ? "304 or error" : "Downloaded"));
 
                 subtitlesToReturn.add(new SubtitlesStream.Builder()
                         .setContent(cleanUrl + "&fmt=" + format.getSuffix(), true)
