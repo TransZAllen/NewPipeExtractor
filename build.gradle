@@ -5,13 +5,16 @@ allprojects {
     compileJava.options.encoding = 'UTF-8'
     compileTestJava.options.encoding = 'UTF-8'
 
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    //sourceCompatibility = JavaVersion.VERSION_11
+    //targetCompatibility = JavaVersion.VERSION_11
 
     version 'v0.24.8'
     group 'com.github.TeamNewPipe'
 
     repositories {
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
         mavenCentral()
         maven { url "https://jitpack.io" }
     }
