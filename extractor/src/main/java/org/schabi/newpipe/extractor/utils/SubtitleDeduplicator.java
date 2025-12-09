@@ -98,7 +98,8 @@ public class SubtitleDeduplicator {
             return cacheFilePathForExoplayer;
         }
 
-        String downloadedContent = downloadRemoteText(remoteSubtitleUrl,3,1000);
+        // Current subtitle format is TTML
+        String downloadedContent = downloadRemoteSubtitleContent(remoteSubtitleUrl,3,1000);
         if (null == downloadedContent) {
             return remoteSubtitleUrl;
         }
@@ -120,13 +121,13 @@ public class SubtitleDeduplicator {
     }
 
     /**
-     * Downloads plain text content from a remote HTTP(S) URL.
+     * simple method to Download plain text content from a remote HTTP(S) URL.
      * This method does not support local file paths or 'file://' URLs.
      *
      * @param urlStr the full HTTP or HTTPS URL to download from
      * @return the content as a String, or null if download fails
      */
-    private static String downloadRemoteText(String urlStr) {
+    private static String downloadRemoteSubtitleContent(String urlStr) {
         StringBuilder sb = new StringBuilder();
         try (BufferedReader in = new BufferedReader(new InputStreamReader(
                 new URL(urlStr).openStream(), StandardCharsets.UTF_8))) {
@@ -141,7 +142,9 @@ public class SubtitleDeduplicator {
         }
     }
 
-    private static String downloadRemoteText(String urlStr, int maxRetries, int initialDelayMillis) {
+    private static String downloadRemoteSubtitleContent(String urlStr,
+                                                        int maxRetries,
+                                                        int initialDelayMillis) {
         Downloader downloader = NewPipe.getDownloader();
         if (downloader == null) {
             System.err.println(TAG + ": Downloader not initialized");
