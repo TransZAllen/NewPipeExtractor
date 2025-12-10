@@ -48,37 +48,19 @@ public class SubtitleDeduplicator {
 
     private static String subCacheDir = "subtitle_cache";
 
-    // There are two cache paths to choose:
-    // 1) Here, init to call Default;
-    // 2) Other places, call NotDefault before checkAndDeduplicate().
     private static File CACHE_DIR = null;
-    static {
-        setCacheDirPathDefault();
-    }
 
+    // CACHE_DIR is /storage/emulated/0/Android/data/<package_name>/cache/{subCacheDir}
     public static void setCacheDirPath(String path) {
-        CACHE_DIR = new File(path, subCacheDir);
-        if (false == CACHE_DIR.exists()) {
-            CACHE_DIR.mkdirs();
-        }
-    }
-
-    // e.g. //data/user/0/***/cache/subtitle_cache
-    // generally, it needs root permission.
-    public static void setCacheDirPathDefault() {
-        File defaultFile = new File(System.getProperty("java.io.tmpdir"));
-        String defaultPath = defaultFile.getAbsolutePath();
-
-        setCacheDirPath(defaultPath);
-    }
-
-    // e.g. //storage/emulated/0/Android/data/***/cache/subtitle_cache
-    public static void setCacheDirPathNotDefault(String path) {
         if (true == stringIsNullOrEmpty(path)) {
             return;
         }
 
-        setCacheDirPath(path);
+        CACHE_DIR = new File(path, subCacheDir);
+
+        if (false == CACHE_DIR.exists()) {
+            CACHE_DIR.mkdirs();
+        }
     }
 
     /**
