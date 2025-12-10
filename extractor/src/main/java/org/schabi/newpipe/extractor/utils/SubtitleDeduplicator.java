@@ -120,28 +120,6 @@ public class SubtitleDeduplicator {
         return localSubtitleUrl;
     }
 
-    /**
-     * simple method to Download plain text content from a remote HTTP(S) URL.
-     * This method does not support local file paths or 'file://' URLs.
-     *
-     * @param urlStr the full HTTP or HTTPS URL to download from
-     * @return the content as a String, or null if download fails
-     */
-    private static String downloadRemoteSubtitleContent(String urlStr) {
-        StringBuilder sb = new StringBuilder();
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(
-                new URL(urlStr).openStream(), StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = in.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-            return sb.toString();
-        } catch (IOException e) {
-            System.err.println(TAG + ": Failed to download subtitle: " + e.getMessage());
-            return null;
-        }
-    }
-
     private static String downloadRemoteSubtitleContent(String urlStr,
                                                         int maxRetries,
                                                         int initialDelayMillis) {
