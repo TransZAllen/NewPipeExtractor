@@ -71,7 +71,7 @@ public class SubtitleDeduplicator {
       */
     public static String checkAndDeduplicate(String remoteSubtitleUrl,
                                              MediaFormat format) {
-        File cacheFile = getDeduplicatedCachefileName(remoteSubtitleUrl, format);
+        File cacheFile = getDeduplicatedCacheFile(remoteSubtitleUrl, format);
 
         int deduplicatedBefore = hasTheSubtitleBeenDeduplicatedBefore(cacheFile);
         // Yes, it has been deduplicated before.
@@ -287,7 +287,7 @@ public class SubtitleDeduplicator {
     private static String storeItToCacheDir(String subtitleContent,
                                             String subtitleUrl,
                                             MediaFormat format) {
-        File cacheFile = getDeduplicatedCachefileName(subtitleUrl, format);
+        File cacheFile = getDeduplicatedCacheFile(subtitleUrl, format);
 
         String cacheFilePathForExoplayer = pathUsedByExoplayer(cacheFile);
 
@@ -303,14 +303,13 @@ public class SubtitleDeduplicator {
         }
     }
 
-    private static String computeShorterFilename(String subtitleUrl,
+    // filename without dir path
+    private static String computeFilename(String subtitleUrl,
                                                 MediaFormat format,
                                                 String tag0) {
         String videoId = getVideoId(subtitleUrl);
         String baseName = videoId;
 
-        //String fileExtension = "." + format;
-        //String filename = baseName + fileExtension;
         String languageCode = getLanguageCode(subtitleUrl);
 
         StringBuilder filenameBuilder = getCommonFilename(baseName,tag0,
@@ -387,22 +386,22 @@ public class SubtitleDeduplicator {
         return videoId;
     }
 
-    private static File getDeduplicatedCachefileName(String subtitleUrl, MediaFormat format) {
+    private static File getDeduplicatedCacheFile(String subtitleUrl, MediaFormat format) {
         String tag0 = "deduplicated";
 
-        File DeduplicatedFileName = getCachefileName(subtitleUrl,format,tag0);
+        File deduplicatedFile = getCacheFile(subtitleUrl,format,tag0);
 
-        return DeduplicatedFileName;
+        return deduplicatedFile;
     }
 
-    private static File getCachefileName(String subtitleUrl,
+    private static File getCacheFile(String subtitleUrl,
                                         MediaFormat format,
                                         String tag0) {
-        String cachefilename = computeShorterFilename(subtitleUrl, format, tag0);
+        String cachefilename = computeFilename(subtitleUrl, format, tag0);
 
-        File tempCacheFile = new File(CACHE_DIR, cachefilename);
+        File cacheFile = new File(CACHE_DIR, cachefilename);
 
-        return tempCacheFile;
+        return cacheFile;
     }
 
     // 0: it has been deduplicated bofore.
