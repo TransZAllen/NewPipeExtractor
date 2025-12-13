@@ -76,7 +76,7 @@ public class SubtitleDeduplicator {
         int deduplicatedBefore = hasTheSubtitleBeenDeduplicatedBefore(cacheFile);
         // Yes, it has been deduplicated before.
         if (0 == deduplicatedBefore) {
-            String cacheFilePathForExoplayer = pathUsedByExoplayer(cacheFile);
+            String cacheFilePathForExoplayer = getFileUri(cacheFile);
             return cacheFilePathForExoplayer;
         }
 
@@ -278,7 +278,7 @@ public class SubtitleDeduplicator {
         return key;
     }
 
-    private static String pathUsedByExoplayer(File subtitleCacheFile) {
+    private static String getFileUri(File subtitleCacheFile) {
         String path = LOCAL_SUBTITLE_URL_PREFIX + subtitleCacheFile.getAbsolutePath();
 
         return path;
@@ -289,7 +289,7 @@ public class SubtitleDeduplicator {
                                             MediaFormat format) {
         File cacheFile = getDeduplicatedCacheFile(subtitleUrl, format);
 
-        String cacheFilePathForExoplayer = pathUsedByExoplayer(cacheFile);
+        String cacheFilePathForExoplayer = getFileUri(cacheFile);
 
         if (false == ensureItsParentDirExist(cacheFile)) {
             return null;
