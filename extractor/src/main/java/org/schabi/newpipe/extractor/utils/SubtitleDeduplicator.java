@@ -93,17 +93,26 @@ public class SubtitleDeduplicator {
         }
 
         String finalContent = null;
+        SubtitleState currentSubtitleState = SubtitleState.ORIGINAL;
 
         if (true == containsDuplicatedEntries(downloadedContent)) {
             finalContent = deduplicateContent(downloadedContent);
+            currentSubtitleState = SubtitleState.DEDUPLICATED;
         } else {
             finalContent = downloadedContent;
+            currentSubtitleState = SubtitleState.ORIGINAL;
         }
+
+        File currentCacheFile = getCacheFile(remoteSubtitleUrl,
+                                             format,
+                                             currentSubtitleOrigin,
+                                             currentSubtitleState);
 
         localSubtitleUrl = storeItToCacheDir(finalContent,
                                                     remoteSubtitleUrl,
                                                     format,
-                                                    currentSubtitleOrigin);
+                                                    currentSubtitleOrigin,
+                                                currentCacheFile);
         if (null == localSubtitleUrl) {
             if (true == hasTheSubtitleBeenDownloadedBefore(remoteSubtitleUrl)) {
                 localSubtitleUrl = buildLocalFileUri(cacheFile);
@@ -301,10 +310,9 @@ public class SubtitleDeduplicator {
     private static String storeItToCacheDir(String subtitleContent,
                                             String subtitleUrl,
                                             MediaFormat format,
-                                            SubtitleOrigin currentSubtitleOrigin) {
-        File cacheFile = getDeduplicatedCacheFile(subtitleUrl,
-                                                  format,
-                                                  currentSubtitleOrigin);
+                                            SubtitleOrigin currentSubtitleOrigin,
+                                            File currentCacheFile) {
+        File cacheFile = currentCacheFile;
 
         String cacheFilePathForExoplayer = buildLocalFileUri(cacheFile);
 
