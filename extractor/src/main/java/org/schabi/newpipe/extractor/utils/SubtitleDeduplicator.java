@@ -75,30 +75,38 @@ public class SubtitleDeduplicator {
                                              MediaFormat format) {
         File cacheFile = getDeduplicatedCacheFile(remoteSubtitleUrl, format);
 
-        int deduplicatedBefore = hasTheSubtitleBeenDeduplicatedBefore(cacheFile);
-        // Yes, it has been deduplicated before.
-        if (0 == deduplicatedBefore) {
-            String cacheFilePathForExoplayer = buildLocalFileUri(cacheFile);
-            return cacheFilePathForExoplayer;
-        }
+        String localSubtitleUrl = null;
 
         // Current subtitle format is TTML
         String downloadedContent = downloadRemoteSubtitleContent(remoteSubtitleUrl,3,1000);
+        // High probability of download failure
         if (null == downloadedContent) {
-            return remoteSubtitleUrl;
+            if (true == hasTheSubtitleBeenDownloadedBefore(remoteSubtitleUrl)) {
+                localSubtitleUrl = buildLocalFileUri(cacheFile);
+                return localSubtitleUrl;
+            } else {
+                return remoteSubtitleUrl;
+            }
         }
 
-        if (false == containsDuplicatedEntries(downloadedContent)) {
-            return remoteSubtitleUrl;
+        String finalContent = null;
+
+        if (true == containsDuplicatedEntries(downloadedContent)) {
+            finalContent = deduplicateContent(downloadedContent);
+        } else {
+            finalContent = downloadedContent;
         }
 
-        String finalContent = deduplicateContent(downloadedContent);
-
-        String localSubtitleUrl = storeItToCacheDir(finalContent,
+        localSubtitleUrl = storeItToCacheDir(finalContent,
                                                     remoteSubtitleUrl,
                                                     format);
         if (null == localSubtitleUrl) {
-            return remoteSubtitleUrl;
+            if (true == hasTheSubtitleBeenDownloadedBefore(remoteSubtitleUrl)) {
+                localSubtitleUrl = buildLocalFileUri(cacheFile);
+                return localSubtitleUrl;
+            } else {
+                return remoteSubtitleUrl;
+            }
         }
 
         return localSubtitleUrl;
@@ -448,6 +456,12 @@ public class SubtitleDeduplicator {
         } else {
             return 2;
         }
+    }
+
+    private static boolean hasTheSubtitleBeenDownloadedBefore(String remoteSubtitleUrl) {
+        String videoId = getVideoId(remoteSubtitleUrl);
+        ///to be added...Whether the subtitle is stored as a cached file ?
+        return false;
     }
 
     private static boolean isFileEmpty(File file) {
