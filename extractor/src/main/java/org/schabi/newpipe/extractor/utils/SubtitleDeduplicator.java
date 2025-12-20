@@ -84,7 +84,7 @@ public class SubtitleDeduplicator {
         String downloadedContent = downloadRemoteSubtitleContent(remoteSubtitleUrl,3,1000);
         // High probability of download failure
         if (null == downloadedContent) {
-            if (true == hasTheSubtitleBeenStoredBefore(
+            if (true == theSubtitleWasStoredBefore(
                             remoteSubtitleUrl,
                             format,
                             currentSubtitleOrigin))
@@ -118,7 +118,7 @@ public class SubtitleDeduplicator {
                                                     currentSubtitleOrigin,
                                                 currentCacheFile);
         if (null == localSubtitleUrl) {
-            if (true == hasTheSubtitleBeenStoredBefore(
+            if (true == theSubtitleWasStoredBefore(
                             remoteSubtitleUrl,
                             format,
                             currentSubtitleOrigin))
@@ -481,7 +481,7 @@ public class SubtitleDeduplicator {
         }
     }
 
-    private static boolean hasTheSubtitleBeenStoredBefore(
+    private static boolean theSubtitleWasStoredBefore(
         String remoteSubtitleUrl,
         MediaFormat format,
         SubtitleOrigin currentSubtitleOrigin
