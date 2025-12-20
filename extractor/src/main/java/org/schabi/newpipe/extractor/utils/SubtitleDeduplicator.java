@@ -72,8 +72,11 @@ public class SubtitleDeduplicator {
                 otherwise the original URL.
       */
     public static String checkAndDeduplicate(String remoteSubtitleUrl,
-                                             MediaFormat format) {
-        File cacheFile = getDeduplicatedCacheFile(remoteSubtitleUrl, format);
+                                             MediaFormat format,
+                                             SubtitleOrigin currentSubtitleOrigin) {
+        File cacheFile = getDeduplicatedCacheFile(remoteSubtitleUrl,
+                                                  format,
+                                                  currentSubtitleOrigin);
 
         String localSubtitleUrl = null;
 
@@ -99,7 +102,8 @@ public class SubtitleDeduplicator {
 
         localSubtitleUrl = storeItToCacheDir(finalContent,
                                                     remoteSubtitleUrl,
-                                                    format);
+                                                    format,
+                                                    currentSubtitleOrigin);
         if (null == localSubtitleUrl) {
             if (true == hasTheSubtitleBeenDownloadedBefore(remoteSubtitleUrl)) {
                 localSubtitleUrl = buildLocalFileUri(cacheFile);
@@ -296,8 +300,11 @@ public class SubtitleDeduplicator {
 
     private static String storeItToCacheDir(String subtitleContent,
                                             String subtitleUrl,
-                                            MediaFormat format) {
-        File cacheFile = getDeduplicatedCacheFile(subtitleUrl, format);
+                                            MediaFormat format,
+                                            SubtitleOrigin currentSubtitleOrigin) {
+        File cacheFile = getDeduplicatedCacheFile(subtitleUrl,
+                                                  format,
+                                                  currentSubtitleOrigin);
 
         String cacheFilePathForExoplayer = buildLocalFileUri(cacheFile);
 
@@ -316,27 +323,18 @@ public class SubtitleDeduplicator {
     // filename without dir path
     private static String computeFilename(String subtitleUrl,
                                                 MediaFormat format,
-                                                String tag0) {
+                                                SubtitleOrigin currentSubtitleOrigin,
+                                            SubtitleState currentSubtitleState) {
         String videoId = getVideoId(subtitleUrl);
-        String baseName = videoId;
 
         String languageCode = getLanguageCode(subtitleUrl);
 
-        StringBuilder filenameBuilder = getCommonFilename(baseName,tag0,
-                                                    languageCode,format);
-
         String autoTranslateLanguage = checkAutoTranslateLanguage(subtitleUrl);
 
-        if (null != autoTranslateLanguage) {
-            filenameBuilder = addAutoTranslateLanguage(filenameBuilder,
-                                                        autoTranslateLanguage);
-        }
-
-        //String filename = filenameBuilder.toString();
         String filename = buildSubtitleCacheFilename(videoId,
                                                      languageCode,
-                                                     SubtitleOrigin.UPLOADED,
-                                                     SubtitleState.ORIGINAL,
+                                                     currentSubtitleOrigin,
+                                                     currentSubtitleState,
                                                      format.getSuffix());
 
         return filename;
@@ -427,18 +425,27 @@ public class SubtitleDeduplicator {
         return videoId;
     }
 
-    private static File getDeduplicatedCacheFile(String subtitleUrl, MediaFormat format) {
-        String tag0 = "deduplicated";
+    private static File getDeduplicatedCacheFile(String subtitleUrl,
+                                                MediaFormat format,
+                                                SubtitleOrigin currentSubtitleOrigin) {
+        SubtitleState currentSubtitleState = SubtitleState.DEDUPLICATED;
 
-        File deduplicatedFile = getCacheFile(subtitleUrl,format,tag0);
+        File deduplicatedFile = getCacheFile(subtitleUrl,
+                                             format,
+                                             currentSubtitleOrigin,
+                                             currentSubtitleState);
 
         return deduplicatedFile;
     }
 
     private static File getCacheFile(String subtitleUrl,
                                         MediaFormat format,
-                                        String tag0) {
-        String cachefilename = computeFilename(subtitleUrl, format, tag0);
+                                        SubtitleOrigin currentSubtitleOrigin,
+                                        SubtitleState currentSubtitleState) {
+        String cachefilename = computeFilename(subtitleUrl,
+                                                format,
+                                                currentSubtitleOrigin,
+                                                currentSubtitleState);
 
         File cacheFile = new File(CACHE_DIR, cachefilename);
 
