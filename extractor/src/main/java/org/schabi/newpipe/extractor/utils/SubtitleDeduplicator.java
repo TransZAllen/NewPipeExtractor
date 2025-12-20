@@ -84,7 +84,11 @@ public class SubtitleDeduplicator {
         String downloadedContent = downloadRemoteSubtitleContent(remoteSubtitleUrl,3,1000);
         // High probability of download failure
         if (null == downloadedContent) {
-            if (true == hasTheSubtitleBeenDownloadedBefore(remoteSubtitleUrl)) {
+            if (true == hasTheSubtitleBeenDownloadedBefore(
+                            remoteSubtitleUrl,
+                            format,
+                            currentSubtitleOrigin))
+            {
                 localSubtitleUrl = buildLocalFileUri(cacheFile);
                 return localSubtitleUrl;
             } else {
@@ -114,7 +118,11 @@ public class SubtitleDeduplicator {
                                                     currentSubtitleOrigin,
                                                 currentCacheFile);
         if (null == localSubtitleUrl) {
-            if (true == hasTheSubtitleBeenDownloadedBefore(remoteSubtitleUrl)) {
+            if (true == hasTheSubtitleBeenDownloadedBefore(
+                            remoteSubtitleUrl,
+                            format,
+                            currentSubtitleOrigin))
+            {
                 localSubtitleUrl = buildLocalFileUri(cacheFile);
                 return localSubtitleUrl;
             } else {
@@ -473,9 +481,33 @@ public class SubtitleDeduplicator {
         }
     }
 
-    private static boolean hasTheSubtitleBeenDownloadedBefore(String remoteSubtitleUrl) {
-        String videoId = getVideoId(remoteSubtitleUrl);
-        ///to be added...Whether the subtitle is stored as a cached file ?
+    private static boolean hasTheSubtitleBeenDownloadedBefore(
+        String remoteSubtitleUrl,
+        MediaFormat format,
+        SubtitleOrigin currentSubtitleOrigin
+    ) {
+        File originalFile = getCacheFile(
+                remoteSubtitleUrl,
+                format,
+                currentSubtitleOrigin,
+                SubtitleState.ORIGINAL
+        );
+
+        if (originalFile.exists() && originalFile.length() > 0) {
+            return true;
+        }
+
+        File deduplicatedFile = getCacheFile(
+                remoteSubtitleUrl,
+                format,
+                currentSubtitleOrigin,
+                SubtitleState.DEDUPLICATED
+        );
+
+        if (deduplicatedFile.exists() && deduplicatedFile.length() > 0) {
+            return true;
+        }
+
         return false;
     }
 
