@@ -389,26 +389,6 @@ public class SubtitleDeduplicator {
                 + "." + extension;
     }
 
-    private static StringBuilder getCommonFilename(String baseName,String tag0,
-                                            String languageCode,
-                                            MediaFormat format) {
-        StringBuilder filenameBuilder = new StringBuilder(baseName);
-        String part0_append = "-" + tag0;
-        filenameBuilder.append(part0_append);
-
-        String key = YoutubeParsingHelper.LANG;
-        //for example: &lang=en
-        String part1_append = "&" + key + "=" + languageCode;
-        filenameBuilder.append(part1_append);
-
-        String part2_append = "&fmt=" + format.getSuffix();
-        filenameBuilder.append(part2_append);
-
-        //the last filename is like: lUDPjyfmJrs-deduplicated&lang=en&fmt=ttml
-
-        return filenameBuilder;
-    }
-
     private static StringBuilder addAutoTranslateLanguage(StringBuilder filenameBuilder,
                                                     String autoTranslateLanguage) {
         String key = YoutubeParsingHelper.TLANG;
@@ -448,19 +428,6 @@ public class SubtitleDeduplicator {
         return videoId;
     }
 
-    private static File getDeduplicatedCacheFile(String subtitleUrl,
-                                                MediaFormat format,
-                                                SubtitleOrigin currentSubtitleOrigin) {
-        SubtitleState currentSubtitleState = SubtitleState.DEDUPLICATED;
-
-        File deduplicatedFile = getCacheFile(subtitleUrl,
-                                             format,
-                                             currentSubtitleOrigin,
-                                             currentSubtitleState);
-
-        return deduplicatedFile;
-    }
-
     private static File getCacheFile(String subtitleUrl,
                                         MediaFormat format,
                                         SubtitleOrigin currentSubtitleOrigin,
@@ -473,19 +440,6 @@ public class SubtitleDeduplicator {
         File cacheFile = new File(CACHE_DIR, cachefilename);
 
         return cacheFile;
-    }
-
-    // 0: it has been deduplicated bofore.
-    private static int hasTheSubtitleBeenDeduplicatedBefore(File tempCacheFile) {
-        if (tempCacheFile.exists()) {
-            if (true == isFileEmpty(tempCacheFile)) {
-                return 1; // error
-            } else {
-                return 0;
-            }
-        } else {
-            return 2;
-        }
     }
 
     private static boolean theSubtitleWasStoredBefore(
