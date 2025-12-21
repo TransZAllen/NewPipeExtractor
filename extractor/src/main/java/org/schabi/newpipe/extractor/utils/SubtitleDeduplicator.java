@@ -486,6 +486,24 @@ public class SubtitleDeduplicator {
         MediaFormat format,
         SubtitleOrigin currentSubtitleOrigin
     ) {
+        File storedFile = findStoredCacheFile(
+                remoteSubtitleUrl,
+                format,
+                currentSubtitleOrigin
+        );
+
+        if (null == storedFile) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private static File findStoredCacheFile(
+            String remoteSubtitleUrl,
+            MediaFormat format,
+            SubtitleOrigin currentSubtitleOrigin
+    ) {
         for (SubtitleState state : SubtitleState.values()) {
             File subtitleFile = getCacheFile(
                     remoteSubtitleUrl,
@@ -495,11 +513,11 @@ public class SubtitleDeduplicator {
             );
 
             if (subtitleFile.exists() && subtitleFile.length() > 0) {
-                return true;
+                return subtitleFile;
             }
         }
 
-        return false;
+        return null;
     }
 
     private static boolean isFileEmpty(File file) {
