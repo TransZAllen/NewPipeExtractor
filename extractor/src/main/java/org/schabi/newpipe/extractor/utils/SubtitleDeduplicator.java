@@ -486,26 +486,17 @@ public class SubtitleDeduplicator {
         MediaFormat format,
         SubtitleOrigin currentSubtitleOrigin
     ) {
-        File originalFile = getCacheFile(
-                remoteSubtitleUrl,
-                format,
-                currentSubtitleOrigin,
-                SubtitleState.ORIGINAL
-        );
+        for (SubtitleState state : SubtitleState.values()) {
+            File subtitleFile = getCacheFile(
+                    remoteSubtitleUrl,
+                    format,
+                    currentSubtitleOrigin,
+                    state
+            );
 
-        if (originalFile.exists() && originalFile.length() > 0) {
-            return true;
-        }
-
-        File deduplicatedFile = getCacheFile(
-                remoteSubtitleUrl,
-                format,
-                currentSubtitleOrigin,
-                SubtitleState.DEDUPLICATED
-        );
-
-        if (deduplicatedFile.exists() && deduplicatedFile.length() > 0) {
-            return true;
+            if (subtitleFile.exists() && subtitleFile.length() > 0) {
+                return true;
+            }
         }
 
         return false;
