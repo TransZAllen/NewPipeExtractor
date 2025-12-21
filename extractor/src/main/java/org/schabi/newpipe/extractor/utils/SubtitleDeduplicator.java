@@ -74,10 +74,6 @@ public class SubtitleDeduplicator {
     public static String checkAndDeduplicate(String remoteSubtitleUrl,
                                              MediaFormat format,
                                              SubtitleOrigin currentSubtitleOrigin) {
-        File cacheFile = getDeduplicatedCacheFile(remoteSubtitleUrl,
-                                                  format,
-                                                  currentSubtitleOrigin);
-
         String localSubtitleUrl = null;
 
         // Current subtitle format is TTML
@@ -89,7 +85,12 @@ public class SubtitleDeduplicator {
                             format,
                             currentSubtitleOrigin))
             {
-                localSubtitleUrl = buildLocalFileUri(cacheFile);
+                File storedFile = findStoredCacheFile(
+                        remoteSubtitleUrl,
+                        format,
+                        currentSubtitleOrigin
+                );
+                localSubtitleUrl = buildLocalFileUri(storedFile);
                 return localSubtitleUrl;
             } else {
                 return remoteSubtitleUrl;
@@ -117,13 +118,19 @@ public class SubtitleDeduplicator {
                                                     format,
                                                     currentSubtitleOrigin,
                                                 currentCacheFile);
+        // failed to store
         if (null == localSubtitleUrl) {
             if (true == theSubtitleWasStoredBefore(
                             remoteSubtitleUrl,
                             format,
                             currentSubtitleOrigin))
             {
-                localSubtitleUrl = buildLocalFileUri(cacheFile);
+                File storedFile = findStoredCacheFile(
+                        remoteSubtitleUrl,
+                        format,
+                        currentSubtitleOrigin
+                );
+                localSubtitleUrl = buildLocalFileUri(storedFile);
                 return localSubtitleUrl;
             } else {
                 return remoteSubtitleUrl;
