@@ -390,15 +390,6 @@ public class SubtitleDeduplicator {
                 + "." + extension;
     }
 
-    private static StringBuilder addAutoTranslateLanguage(StringBuilder filenameBuilder,
-                                                    String autoTranslateLanguage) {
-        String key = YoutubeParsingHelper.TLANG;
-        String part0_append = "&" + key + "=" + autoTranslateLanguage;
-        filenameBuilder.append(part0_append);
-
-        return filenameBuilder;
-    }
-
     private static String checkAutoTranslateLanguage(String subtitleUrl) {
         String language_autoTranslate = getAutoTranslateLanguage(subtitleUrl);
 
