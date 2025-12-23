@@ -355,8 +355,6 @@ public class SubtitleDeduplicator {
                 currentSubtitleOrigin
         );
 
-        String autoTranslateLanguage = checkAutoTranslateLanguage(subtitleUrl);
-
         String filename = buildSubtitleCacheFilename(videoId,
                                                      languageCode,
                                                      currentSubtitleOrigin,
