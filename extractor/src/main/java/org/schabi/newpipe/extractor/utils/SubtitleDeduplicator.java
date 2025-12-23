@@ -350,7 +350,10 @@ public class SubtitleDeduplicator {
                                             SubtitleState currentSubtitleState) {
         String videoId = getVideoId(subtitleUrl);
 
-        String languageCode = getLanguageCode(subtitleUrl);
+        String languageCode = resolveSubtitleLanguage(
+                subtitleUrl,
+                currentSubtitleOrigin
+        );
 
         String autoTranslateLanguage = checkAutoTranslateLanguage(subtitleUrl);
 
@@ -415,9 +418,34 @@ public class SubtitleDeduplicator {
     }
 
     private static String getAutoTranslateLanguage(String remoteSubtitleUrl) {
-        String Auto_Translate = null;
-        Auto_Translate = YoutubeParsingHelper.extractTranslationCode(remoteSubtitleUrl);
-        return Auto_Translate;
+        // For auto-translate subtitles Url, there are two language code in it:
+        // one is 'lang', now its meaning is source language;
+        // the other is 'tlang', its meaning is target language.
+        String target_autoTranslate = null;
+        target_autoTranslate = YoutubeParsingHelper.extractTranslationCode(
+                remoteSubtitleUrl
+        );
+        return target_autoTranslate;
+    }
+
+    // For auto-translate subtitles, the cache filename language
+    // represents the target language (tlang), not the source language.
+    private static String resolveSubtitleLanguage(
+            String subtitleUrl,
+            SubtitleOrigin origin
+    ) {
+        if (origin == SubtitleOrigin.AUTO_TRANSLATED) {
+            String targetLang = getAutoTranslateLanguage(subtitleUrl);
+
+            if (!stringIsNullOrEmpty(targetLang)) {
+                return targetLang;
+            } else {
+                String UNKNOWN_LANGUAGE = "unknownLanguage";
+                return UNKNOWN_LANGUAGE;
+            }
+        }
+
+        return getLanguageCode(subtitleUrl);
     }
 
     // Extract the videoId (e.g., "lUDPjyfmJrs") from a subtitle URL
