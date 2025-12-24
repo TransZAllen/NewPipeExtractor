@@ -65,16 +65,11 @@ public class SubtitleDeduplicator {
         }
     }
 
-    /**
-      * Checks if a subtitle contains duplicates,
-        deduplicates it if necessary, and caches it locally.
-      * @return The local file URL if deduplication and caching succeed,
-                otherwise the original URL.
-      */
+    // Returns either a remote subtitle URL or a local file URI (file://)
     public static String checkAndDeduplicate(String remoteSubtitleUrl,
                                              MediaFormat format,
                                              SubtitleOrigin currentSubtitleOrigin) {
-        String localSubtitleUrl = null;
+        String localSubtitleUri = null;
 
         // Step 1: Download remote subtitle content
 
@@ -107,19 +102,19 @@ public class SubtitleDeduplicator {
                                              currentSubtitleOrigin,
                                              currentSubtitleState);
 
-        localSubtitleUrl = storeItToCacheDir(finalContent,
+        localSubtitleUri = storeItToCacheDir(finalContent,
                                                     remoteSubtitleUrl,
                                                     format,
                                                     currentSubtitleOrigin,
                                                 currentCacheFile);
 
-        if (true == subtitleStorageFails(localSubtitleUrl)) {
+        if (true == subtitleStorageFails(localSubtitleUri)) {
             return fallbackToStoredOrRemote(remoteSubtitleUrl,
                                             format,
                                             currentSubtitleOrigin);
         }
 
-        return localSubtitleUrl;
+        return localSubtitleUri;
     }
 
     private static String downloadRemoteSubtitleContent(String urlStr,
