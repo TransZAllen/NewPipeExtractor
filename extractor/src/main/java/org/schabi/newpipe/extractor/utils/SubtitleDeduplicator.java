@@ -435,24 +435,6 @@ public class SubtitleDeduplicator {
         return cacheFile;
     }
 
-    private static boolean theSubtitleWasStoredBefore(
-        String remoteSubtitleUrl,
-        MediaFormat format,
-        SubtitleOrigin currentSubtitleOrigin
-    ) {
-        File storedFile = findStoredCacheFile(
-                remoteSubtitleUrl,
-                format,
-                currentSubtitleOrigin
-        );
-
-        if (null == storedFile) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     private static File findStoredCacheFile(
             String remoteSubtitleUrl,
             MediaFormat format,
