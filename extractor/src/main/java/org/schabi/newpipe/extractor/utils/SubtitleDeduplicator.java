@@ -76,6 +76,8 @@ public class SubtitleDeduplicator {
                                              SubtitleOrigin currentSubtitleOrigin) {
         String localSubtitleUrl = null;
 
+        // Step 1: Download remote subtitle content
+
         // Current subtitle format is TTML
         String downloadedContent = downloadRemoteSubtitleContent(remoteSubtitleUrl,3,1000);
 
@@ -88,6 +90,8 @@ public class SubtitleDeduplicator {
         String finalContent = null;
         SubtitleState currentSubtitleState = SubtitleState.ORIGINAL;
 
+        // Step 2: Detect and deduplicate if needed
+
         if (true == containsDuplicatedEntries(downloadedContent)) {
             finalContent = deduplicateContent(downloadedContent);
             currentSubtitleState = SubtitleState.DEDUPLICATED;
@@ -95,6 +99,8 @@ public class SubtitleDeduplicator {
             finalContent = downloadedContent;
             currentSubtitleState = SubtitleState.ORIGINAL;
         }
+
+        // Step 3: Store subtitle to cache and return local URI if possible
 
         File currentCacheFile = getCacheFile(remoteSubtitleUrl,
                                              format,
