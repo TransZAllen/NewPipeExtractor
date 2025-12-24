@@ -80,21 +80,9 @@ public class SubtitleDeduplicator {
         String downloadedContent = downloadRemoteSubtitleContent(remoteSubtitleUrl,3,1000);
         // High probability of download failure
         if (null == downloadedContent) {
-            if (true == theSubtitleWasStoredBefore(
-                            remoteSubtitleUrl,
-                            format,
-                            currentSubtitleOrigin))
-            {
-                File storedFile = findStoredCacheFile(
-                        remoteSubtitleUrl,
-                        format,
-                        currentSubtitleOrigin
-                );
-                localSubtitleUrl = buildLocalFileUri(storedFile);
-                return localSubtitleUrl;
-            } else {
-                return remoteSubtitleUrl;
-            }
+            return fallbackToStoredOrRemote(remoteSubtitleUrl,
+                                            format,
+                                            currentSubtitleOrigin);
         }
 
         String finalContent = null;
@@ -120,21 +108,9 @@ public class SubtitleDeduplicator {
                                                 currentCacheFile);
         // failed to store
         if (null == localSubtitleUrl) {
-            if (true == theSubtitleWasStoredBefore(
-                            remoteSubtitleUrl,
-                            format,
-                            currentSubtitleOrigin))
-            {
-                File storedFile = findStoredCacheFile(
-                        remoteSubtitleUrl,
-                        format,
-                        currentSubtitleOrigin
-                );
-                localSubtitleUrl = buildLocalFileUri(storedFile);
-                return localSubtitleUrl;
-            } else {
-                return remoteSubtitleUrl;
-            }
+            return fallbackToStoredOrRemote(remoteSubtitleUrl,
+                                            format,
+                                            currentSubtitleOrigin);
         }
 
         return localSubtitleUrl;
@@ -496,6 +472,26 @@ public class SubtitleDeduplicator {
         }
 
         return null;
+    }
+
+    @Nonnull
+    private static String fallbackToStoredOrRemote(
+            @Nonnull String remoteSubtitleUrl,
+            @Nonnull MediaFormat format,
+            @Nonnull SubtitleOrigin origin
+    ) {
+        File storedFile = findStoredCacheFile(
+                remoteSubtitleUrl,
+                format,
+                origin
+        );
+
+        if (storedFile != null) {
+            String previousStoredUri = buildLocalFileUri(storedFile);
+            return previousStoredUri;
+        }
+
+        return remoteSubtitleUrl;
     }
 
     private static boolean isFileEmpty(File file) {
