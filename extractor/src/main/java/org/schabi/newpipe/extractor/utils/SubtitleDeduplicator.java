@@ -78,8 +78,8 @@ public class SubtitleDeduplicator {
 
         // Current subtitle format is TTML
         String downloadedContent = downloadRemoteSubtitleContent(remoteSubtitleUrl,3,1000);
-        // High probability of download failure
-        if (null == downloadedContent) {
+
+        if (true == subtitleDownloadFails(downloadedContent)) {
             return fallbackToStoredOrRemote(remoteSubtitleUrl,
                                             format,
                                             currentSubtitleOrigin);
@@ -106,8 +106,8 @@ public class SubtitleDeduplicator {
                                                     format,
                                                     currentSubtitleOrigin,
                                                 currentCacheFile);
-        // failed to store
-        if (null == localSubtitleUrl) {
+
+        if (true == subtitleStorageFails(localSubtitleUrl)) {
             return fallbackToStoredOrRemote(remoteSubtitleUrl,
                                             format,
                                             currentSubtitleOrigin);
@@ -474,6 +474,22 @@ public class SubtitleDeduplicator {
         }
 
         return remoteSubtitleUrl;
+    }
+
+    private static boolean subtitleDownloadFails(String contentDownloaded) {
+        if (null == contentDownloaded) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private static boolean subtitleStorageFails(String localUriAfterStores) {
+        if (null == localUriAfterStores) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private static boolean isFileEmpty(File file) {
