@@ -103,10 +103,9 @@ public class SubtitleDeduplicator {
                                              currentSubtitleState);
 
         localSubtitleUri = storeItToCacheDir(finalContent,
-                                                    remoteSubtitleUrl,
-                                                    format,
-                                                    currentSubtitleOrigin,
-                                                currentCacheFile);
+                                             format,
+                                             currentSubtitleOrigin,
+                                             currentCacheFile);
 
         if (true == subtitleStorageFails(localSubtitleUri)) {
             return fallbackToStoredOrRemote(remoteSubtitleUrl,
@@ -300,7 +299,6 @@ public class SubtitleDeduplicator {
     }
 
     private static String storeItToCacheDir(String subtitleContent,
-                                            String subtitleUrl,
                                             MediaFormat format,
                                             SubtitleOrigin currentSubtitleOrigin,
                                             File currentCacheFile) {
