@@ -34,9 +34,9 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
  * 1. This file is responsible for checking if the subtitles
  * contain any duplicate entries.
  *   a) If duplicates are found, it performs the following steps:
- *      downloads the subtitle, deduplicates it,
+ *      downloads the subtitle (TTML format), deduplicates it,
  *      and stores it locally.
- *   b) If no duplicates are found, no action is taken.
+ *   b) If no duplicates are found, downloads and stores it.
  *
  * 2. Core Functions:
  * - checkAndDeduplicate(): Checks for duplicate subtitles
