@@ -502,14 +502,6 @@ public class SubtitleDeduplicator {
         }
     }
 
-    private static boolean isFileEmpty(File file) {
-        if(0 == file.length()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     private static boolean ensureItsParentDirExist(File tempCacheFile) {
         File parentDir = tempCacheFile.getParentFile();
 
