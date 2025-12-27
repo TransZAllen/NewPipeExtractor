@@ -233,6 +233,15 @@ public class SubtitleDeduplicator {
     }
 
     public static String deduplicateContent(String subtitleContent) {
+        // Subtitle entries are considered duplicated only if:
+        // 1) begin timestamp is exactly the same,
+        // 2) end timestamp is exactly the same,
+        // 3) subtitle text content is exactly the same
+        //    (after trimming and normalizing whitespace).
+        //
+        // This is a strict, character-level comparison.
+        // No semantic analysis or fuzzy matching is performed.
+
         if (true == stringIsNullOrEmpty(subtitleContent)) {
             return subtitleContent;
         }
