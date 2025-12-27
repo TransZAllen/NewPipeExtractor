@@ -189,6 +189,8 @@ public class SubtitleDeduplicator {
         }
     }
 
+    // Detects whether the subtitle contains duplicated <p> entries
+    // using the same strict comparison rules as deduplicateContent().
     public static boolean containsDuplicatedEntries(String subtitleContent) {
         if (true == stringIsNullOrEmpty(subtitleContent)) {
             return false;
