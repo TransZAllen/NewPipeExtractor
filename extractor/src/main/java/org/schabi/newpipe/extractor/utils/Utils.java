@@ -196,7 +196,8 @@ public final class Utils {
     }
 
     /**
-     * Extracts the query parameter value from a URL string based on the given key.
+     * Extracts the query parameter value from a URL string
+     * based on the given key.
      *
      * @param key the query parameter key (e.g., "v", "lang", "tlang")
      * @return a) the parameter value - if found,
@@ -204,15 +205,16 @@ public final class Utils {
      *         c) "INVALID_URL" - if the URL is malformed,
      *         d) "UNKNOWN_ERROR" - for other exceptions
      */
-    public static String extractQueryParam(String urlString, String key) {
+    public static String extractQueryParam(final String urlString,
+                                           final String key) {
         try {
-            URL url = stringToURL(urlString);
-            String value = getQueryValue(url, key);
+            final URL url = stringToURL(urlString);
+            final String value = getQueryValue(url, key);
             return value;
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             e.printStackTrace();
             return "INVALID_URL";
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return "UNKNOWN_ERROR";
         }
