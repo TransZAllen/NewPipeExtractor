@@ -69,8 +69,6 @@ public class SubtitleDeduplicator {
     public static String checkAndDeduplicate(String remoteSubtitleUrl,
                                              MediaFormat format,
                                              SubtitleOrigin currentSubtitleOrigin) {
-        String localSubtitleUri = null;
-
         // Step 1: Download remote subtitle content
 
         // Current subtitle format is TTML
@@ -102,7 +100,7 @@ public class SubtitleDeduplicator {
                                              currentSubtitleOrigin,
                                              currentSubtitleState);
 
-        localSubtitleUri = storeItToCacheDir(finalContent,
+        String localSubtitleUri = storeItToCacheDir(finalContent,
                                              format,
                                              currentSubtitleOrigin,
                                              currentCacheFile);
