@@ -206,18 +206,18 @@ public final class YoutubeParsingHelper {
 
     // Extract the videoId (e.g., "lUDPjyfmJrs") from a YouTube subtitle URL
     // (e.g., .../api/timedtext?v=lUDPjyfmJrs)
-    public static String extractVideoId(String urlString) {
+    public static String extractVideoId(final String urlString) {
         return Utils.extractQueryParam(urlString, V);
     }
 
     // Extracts the original language code (e.g., lang=en) from a YouTube URL.
-    public static String extractLanguageCode(String urlString) {
+    public static String extractLanguageCode(final String urlString) {
         return Utils.extractQueryParam(urlString, LANG);
     }
 
     // Extracts the 'Auto-translate' language code (e.g., tlang=zh-CN)
     // from a YouTube URL.
-    public static String extractTranslationCode(String urlString) {
+    public static String extractTranslationCode(final String urlString) {
         return Utils.extractQueryParam(urlString, TLANG);
     }
 
