@@ -48,22 +48,22 @@ public final class SubtitleDeduplicator {
 
     private static String subCacheDir = "subtitle_cache";
 
-    private static File CACHE_DIR = null;
+    private static File cacheDir = null;
 
     private SubtitleDeduplicator() {
         // no instance
     }
 
-    // CACHE_DIR is /storage/emulated/0/Android/data/<package_name>/cache/{subCacheDir}
+    // cacheDir is /storage/emulated/0/Android/data/<package_name>/cache/{subCacheDir}
     public static void setCacheDirPath(final String path) {
         if (true == stringIsNullOrEmpty(path)) {
             return;
         }
 
-        CACHE_DIR = new File(path, subCacheDir);
+        cacheDir = new File(path, subCacheDir);
 
-        if (false == CACHE_DIR.exists()) {
-            CACHE_DIR.mkdirs();
+        if (false == cacheDir.exists()) {
+            cacheDir.mkdirs();
         }
     }
 
@@ -389,12 +389,12 @@ public final class SubtitleDeduplicator {
     }
 
     private static String checkAutoTranslateLanguage(final String subtitleUrl) {
-        final String language_autoTranslate = getAutoTranslateLanguage(subtitleUrl);
+        final String languageAutoTranslate = getAutoTranslateLanguage(subtitleUrl);
 
-        if(true == stringIsNullOrEmpty(language_autoTranslate)) {
+        if(true == stringIsNullOrEmpty(languageAutoTranslate)) {
             return null;
         } else {
-            return language_autoTranslate;
+            return languageAutoTranslate;
         }
     }
 
@@ -408,11 +408,11 @@ public final class SubtitleDeduplicator {
         // For auto-translate subtitles Url, there are two language code in it:
         // one is 'lang', now its meaning is source language;
         // the other is 'tlang', its meaning is target language.
-        String target_autoTranslate = null;
-        target_autoTranslate = YoutubeParsingHelper.extractTranslationCode(
+        String targetAutoTranslate = null;
+        targetAutoTranslate = YoutubeParsingHelper.extractTranslationCode(
                 remoteSubtitleUrl
         );
-        return target_autoTranslate;
+        return targetAutoTranslate;
     }
 
     // For auto-translate subtitles, the cache filename language
@@ -427,8 +427,8 @@ public final class SubtitleDeduplicator {
             if (!stringIsNullOrEmpty(targetLang)) {
                 return targetLang;
             } else {
-                final String UNKNOWN_LANGUAGE = "unknownLanguage";
-                return UNKNOWN_LANGUAGE;
+                final String unknownLanguage = "unknownLanguage";
+                return unknownLanguage;
             }
         }
 
@@ -451,7 +451,7 @@ public final class SubtitleDeduplicator {
                                                 currentSubtitleOrigin,
                                                 currentSubtitleState);
 
-        final File cacheFile = new File(CACHE_DIR, cachefilename);
+        final File cacheFile = new File(cacheDir, cachefilename);
 
         return cacheFile;
     }
