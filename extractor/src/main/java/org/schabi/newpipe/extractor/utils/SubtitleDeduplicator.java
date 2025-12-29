@@ -181,7 +181,9 @@ public class SubtitleDeduplicator {
     }
 
     public static boolean containsDuplicateTtmlEntries(final File subtitleFile) {
-        if (subtitleFile == null || !subtitleFile.exists()) return false;
+        if (subtitleFile == null || !subtitleFile.exists()) {
+            return false;
+        }
 
         try {
             final String content = readFileToString(subtitleFile);
@@ -226,7 +228,9 @@ public class SubtitleDeduplicator {
     }
 
     public static String deduplicateTtmlFile(final File subtitleFile) {
-        if (subtitleFile == null || !subtitleFile.exists()) return "";
+        if (subtitleFile == null || !subtitleFile.exists()) {
+            return "";
+        }
 
         try {
             final String content = readFileToString(subtitleFile);
