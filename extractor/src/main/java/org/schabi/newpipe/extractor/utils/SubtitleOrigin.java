@@ -11,7 +11,7 @@ public enum SubtitleOrigin {
 
     private final String id;
 
-    SubtitleOrigin(@Nonnull String id) {
+    SubtitleOrigin(@Nonnull final String id) {
         this.id = id;
     }
 
