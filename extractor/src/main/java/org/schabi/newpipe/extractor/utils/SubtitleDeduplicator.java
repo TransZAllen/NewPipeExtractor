@@ -6,9 +6,7 @@ import java.io.FileReader;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,7 +51,7 @@ public class SubtitleDeduplicator {
     private static File CACHE_DIR = null;
 
     // CACHE_DIR is /storage/emulated/0/Android/data/<package_name>/cache/{subCacheDir}
-    public static void setCacheDirPath(String path) {
+    public static void setCacheDirPath(final String path) {
         if (true == stringIsNullOrEmpty(path)) {
             return;
         }
@@ -66,13 +64,16 @@ public class SubtitleDeduplicator {
     }
 
     // Returns either a remote subtitle URL or a local file URI (file://)
-    public static String checkAndDeduplicate(String remoteSubtitleUrl,
-                                             MediaFormat format,
-                                             SubtitleOrigin currentSubtitleOrigin) {
+    public static String checkAndDeduplicate(final String remoteSubtitleUrl,
+                                             final MediaFormat format,
+                                             final SubtitleOrigin currentSubtitleOrigin) {
         // Step 1: Download remote subtitle content
 
         // Current subtitle format is TTML
-        String downloadedContent = downloadRemoteSubtitleContent(remoteSubtitleUrl,3,1000);
+        final String downloadedContent = downloadRemoteSubtitleContent(
+                                            remoteSubtitleUrl,
+                                            3,
+                                            1000);
 
         if (true == subtitleDownloadFails(downloadedContent)) {
             return fallbackToStoredOrRemote(remoteSubtitleUrl,
@@ -95,12 +96,12 @@ public class SubtitleDeduplicator {
 
         // Step 3: Store subtitle to cache and return local URI if possible
 
-        File currentCacheFile = getCacheFile(remoteSubtitleUrl,
+        final File currentCacheFile = getCacheFile(remoteSubtitleUrl,
                                              format,
                                              currentSubtitleOrigin,
                                              currentSubtitleState);
 
-        String localSubtitleUri = storeItToCacheDir(finalContent,
+        final String localSubtitleUri = storeItToCacheDir(finalContent,
                                              format,
                                              currentSubtitleOrigin,
                                              currentCacheFile);
@@ -114,10 +115,10 @@ public class SubtitleDeduplicator {
         return localSubtitleUri;
     }
 
-    private static String downloadRemoteSubtitleContent(String urlStr,
-                                                        int maxRetries,
-                                                        int initialDelayMillis) {
-        Downloader downloader = NewPipe.getDownloader();
+    private static String downloadRemoteSubtitleContent(final String urlStr,
+                                                        final int maxRetries,
+                                                        final int initialDelayMillis) {
+        final Downloader downloader = NewPipe.getDownloader();
         if (downloader == null) {
             System.err.println(TAG + ": Downloader not initialized");
             return null;
@@ -129,33 +130,37 @@ public class SubtitleDeduplicator {
                 Map<String, List<String>> headers = new HashMap<>();
                 headers.put("Accept", Collections.singletonList("text/*"));
                 headers.put("Accept-Language", Collections.singletonList("en-US,en;q=0.9"));
-                Response response = downloader.get(urlStr, headers);
+                final Response response = downloader.get(urlStr, headers);
                 if (response.responseCode() == 200) {
                     return response.responseBody();
                 } else {
-                    System.err.println(TAG + ": Attempt " + attempt + " failed with status: " + response.responseCode());
+                    System.err.println(TAG + ": Attempt " + attempt
+                                        + " failed with status: "
+                                        + response.responseCode());
                     if (response.responseCode() != 503 && response.responseCode() != 429) {
                         return null;
                     }
                 }
             } catch (IOException | ReCaptchaException e) {
-                System.err.println(TAG + ": Attempt " + attempt + " failed: " + e.getMessage());
+                System.err.println(TAG + ": Attempt " + attempt
+                                    + " failed: " + e.getMessage());
             }
             if (attempt < maxRetries) {
                 try {
                     Thread.sleep(delay);
                     delay *= 2;
-                } catch (InterruptedException ie) {
+                } catch (final InterruptedException ie) {
                     Thread.currentThread().interrupt();
                     return null;
                 }
             }
         }
-        System.err.println(TAG + ": Failed to download subtitle after " + maxRetries + " attempts: " + urlStr);
+        System.err.println(TAG + ": Failed to download subtitle after "
+                            + maxRetries + " attempts: " + urlStr);
         return null;
     }
 
-    private static boolean isAutoTranslateSubtitleUrl(String urlStr) {
+    private static boolean isAutoTranslateSubtitleUrl(final String urlStr) {
         if (null != checkAutoTranslateLanguage(urlStr)) {
             return true;
         } else {
@@ -163,7 +168,7 @@ public class SubtitleDeduplicator {
         }
     }
 
-    private static int initDelayValue(String urlStr, int inputDelay) {
+    private static int initDelayValue(final String urlStr, final int inputDelay) {
         int initDelay = 0;
 
         if (true == isAutoTranslateSubtitleUrl(urlStr)) {
@@ -175,13 +180,13 @@ public class SubtitleDeduplicator {
         return initDelay;
     }
 
-    public static boolean containsDuplicateTtmlEntries(File subtitleFile) {
+    public static boolean containsDuplicateTtmlEntries(final File subtitleFile) {
         if (subtitleFile == null || !subtitleFile.exists()) return false;
 
         try {
-            String content = readFileToString(subtitleFile);
+            final String content = readFileToString(subtitleFile);
             return containsDuplicatedEntries(content);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             return false;
         }
@@ -189,12 +194,12 @@ public class SubtitleDeduplicator {
 
     // Detects whether the subtitle contains duplicated <p> entries
     // using the same strict comparison rules as deduplicateContent().
-    public static boolean containsDuplicatedEntries(String subtitleContent) {
+    public static boolean containsDuplicatedEntries(final String subtitleContent) {
         if (true == stringIsNullOrEmpty(subtitleContent)) {
             return false;
         }
 
-        Matcher matcher = getTtmlMatcher(subtitleContent);
+        final Matcher matcher = getTtmlMatcher(subtitleContent);
 
         Set<String> seen = new HashSet<>();
         while (matcher.find()) {
@@ -209,8 +214,8 @@ public class SubtitleDeduplicator {
         return false;
     }
 
-    private static String readFileToString(File file) throws IOException {
-        StringBuilder sb = new StringBuilder();
+    private static String readFileToString(final File file) throws IOException {
+        final StringBuilder sb = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -220,19 +225,19 @@ public class SubtitleDeduplicator {
         return sb.toString();
     }
 
-    public static String deduplicateTtmlFile(File subtitleFile) {
+    public static String deduplicateTtmlFile(final File subtitleFile) {
         if (subtitleFile == null || !subtitleFile.exists()) return "";
 
         try {
-            String content = readFileToString(subtitleFile);
+            final String content = readFileToString(subtitleFile);
             return deduplicateContent(content);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             return "";
         }
     }
 
-    public static String deduplicateContent(String subtitleContent) {
+    public static String deduplicateContent(final String subtitleContent) {
         // Subtitle entries are considered duplicated only if:
         // 1) begin timestamp is exactly the same,
         // 2) end timestamp is exactly the same,
@@ -246,7 +251,7 @@ public class SubtitleDeduplicator {
             return subtitleContent;
         }
 
-        Matcher matcher = getTtmlMatcher(subtitleContent);
+        final Matcher matcher = getTtmlMatcher(subtitleContent);
 
         Set<String> seen = new HashSet<>();
         StringBuilder result = new StringBuilder();
@@ -255,7 +260,7 @@ public class SubtitleDeduplicator {
         while (matcher.find()) {
             result.append(subtitleContent, lastIndex, matcher.start());
 
-            String key = getSubtitleKeyOfTtml(matcher);
+            final String key = getSubtitleKeyOfTtml(matcher);
 
             if (!seen.contains(key)) {
                 result.append(matcher.group(0));
@@ -269,7 +274,7 @@ public class SubtitleDeduplicator {
         return result.toString();
     }
 
-    private static boolean stringIsNullOrEmpty(String inputString) {
+    private static boolean stringIsNullOrEmpty(final String inputString) {
         if (null == inputString) {
             return true;
         }
@@ -288,32 +293,32 @@ public class SubtitleDeduplicator {
         );
     }
 
-    private static Matcher getTtmlMatcher(String subtitleContent) {
-        Pattern pattern = defineTtmlSubtitlePattern();
+    private static Matcher getTtmlMatcher(final String subtitleContent) {
+        final Pattern pattern = defineTtmlSubtitlePattern();
         return pattern.matcher(subtitleContent);
     }
 
     private static String getSubtitleKeyOfTtml(Matcher matcher) {
-        String begin = matcher.group(1).trim();
-        String end = matcher.group(2).trim();
-        String content = matcher.group(3).trim().replaceAll("\\s+", " ");
-        String key = begin + "|" + end + "|" + content;
+        final String begin = matcher.group(1).trim();
+        final String end = matcher.group(2).trim();
+        final String content = matcher.group(3).trim().replaceAll("\\s+", " ");
+        final String key = begin + "|" + end + "|" + content;
         return key;
     }
 
-    private static String buildLocalFileUri(File subtitleCacheFile) {
-        String path = LOCAL_SUBTITLE_URL_PREFIX + subtitleCacheFile.getAbsolutePath();
+    private static String buildLocalFileUri(final File subtitleCacheFile) {
+        final String path = LOCAL_SUBTITLE_URL_PREFIX + subtitleCacheFile.getAbsolutePath();
 
         return path;
     }
 
-    private static String storeItToCacheDir(String subtitleContent,
-                                            MediaFormat format,
-                                            SubtitleOrigin currentSubtitleOrigin,
-                                            File currentCacheFile) {
-        File cacheFile = currentCacheFile;
+    private static String storeItToCacheDir(final String subtitleContent,
+                                            final MediaFormat format,
+                                            final SubtitleOrigin currentSubtitleOrigin,
+                                            final File currentCacheFile) {
+        final File cacheFile = currentCacheFile;
 
-        String cacheFilePathForExoplayer = buildLocalFileUri(cacheFile);
+        final String cacheFilePathForExoplayer = buildLocalFileUri(cacheFile);
 
         if (false == ensureItsParentDirExist(cacheFile)) {
             return null;
@@ -328,18 +333,18 @@ public class SubtitleDeduplicator {
     }
 
     // filename without dir path
-    private static String computeFilename(String subtitleUrl,
-                                                MediaFormat format,
-                                                SubtitleOrigin currentSubtitleOrigin,
-                                            SubtitleState currentSubtitleState) {
-        String videoId = getVideoId(subtitleUrl);
+    private static String computeFilename(final String subtitleUrl,
+                                          final MediaFormat format,
+                                          final SubtitleOrigin currentSubtitleOrigin,
+                                          final SubtitleState currentSubtitleState) {
+        final String videoId = getVideoId(subtitleUrl);
 
-        String languageCode = resolveSubtitleLanguage(
+        final String languageCode = resolveSubtitleLanguage(
                 subtitleUrl,
                 currentSubtitleOrigin
         );
 
-        String filename = buildSubtitleCacheFilename(videoId,
+        final String filename = buildSubtitleCacheFilename(videoId,
                                                      languageCode,
                                                      currentSubtitleOrigin,
                                                      currentSubtitleState,
@@ -348,8 +353,8 @@ public class SubtitleDeduplicator {
         return filename;
     }
 
-    public static SubtitleOrigin getSubtitleOrigin(boolean autoGenerated,
-                                                   boolean autoTranslate) {
+    public static SubtitleOrigin getSubtitleOrigin(final boolean autoGenerated,
+                                                   final boolean autoTranslate) {
         if (true == autoTranslate) {
             return SubtitleOrigin.AUTO_TRANSLATED;
         }
@@ -361,11 +366,11 @@ public class SubtitleDeduplicator {
 
     @Nonnull
     private static String buildSubtitleCacheFilename(
-            @Nonnull String videoId,
-            @Nonnull String language,
-            @Nonnull SubtitleOrigin origin,
-            @Nonnull SubtitleState state,
-            @Nonnull String extension
+            @Nonnull final String videoId,
+            @Nonnull final String language,
+            @Nonnull final SubtitleOrigin origin,
+            @Nonnull final SubtitleState state,
+            @Nonnull final String extension
     ) {
         return videoId
                 + "--" + language
@@ -374,8 +379,8 @@ public class SubtitleDeduplicator {
                 + "." + extension;
     }
 
-    private static String checkAutoTranslateLanguage(String subtitleUrl) {
-        String language_autoTranslate = getAutoTranslateLanguage(subtitleUrl);
+    private static String checkAutoTranslateLanguage(final String subtitleUrl) {
+        final String language_autoTranslate = getAutoTranslateLanguage(subtitleUrl);
 
         if(true == stringIsNullOrEmpty(language_autoTranslate)) {
             return null;
@@ -384,13 +389,13 @@ public class SubtitleDeduplicator {
         }
     }
 
-    private static String getLanguageCode(String remoteSubtitleUrl) {
+    private static String getLanguageCode(final String remoteSubtitleUrl) {
         String languageCode = null;
         languageCode = YoutubeParsingHelper.extractLanguageCode(remoteSubtitleUrl);
         return languageCode;
     }
 
-    private static String getAutoTranslateLanguage(String remoteSubtitleUrl) {
+    private static String getAutoTranslateLanguage(final String remoteSubtitleUrl) {
         // For auto-translate subtitles Url, there are two language code in it:
         // one is 'lang', now its meaning is source language;
         // the other is 'tlang', its meaning is target language.
@@ -404,16 +409,16 @@ public class SubtitleDeduplicator {
     // For auto-translate subtitles, the cache filename language
     // represents the target language (tlang), not the source language.
     private static String resolveSubtitleLanguage(
-            String subtitleUrl,
-            SubtitleOrigin origin
+            final String subtitleUrl,
+            final SubtitleOrigin origin
     ) {
         if (origin == SubtitleOrigin.AUTO_TRANSLATED) {
-            String targetLang = getAutoTranslateLanguage(subtitleUrl);
+            final String targetLang = getAutoTranslateLanguage(subtitleUrl);
 
             if (!stringIsNullOrEmpty(targetLang)) {
                 return targetLang;
             } else {
-                String UNKNOWN_LANGUAGE = "unknownLanguage";
+                final String UNKNOWN_LANGUAGE = "unknownLanguage";
                 return UNKNOWN_LANGUAGE;
             }
         }
@@ -424,32 +429,31 @@ public class SubtitleDeduplicator {
     // Extract the videoId (e.g., "lUDPjyfmJrs") from a subtitle URL
     // (e.g., .../api/timedtext?v=lUDPjyfmJrs)
     // for use in generating unique filenames.
-    private static String getVideoId(String remoteSubtitleUrl) {
-        String videoId = YoutubeParsingHelper.extractVideoId(remoteSubtitleUrl);
-        return videoId;
+    private static String getVideoId(final String remoteSubtitleUrl) {
+        return YoutubeParsingHelper.extractVideoId(remoteSubtitleUrl);
     }
 
-    private static File getCacheFile(String subtitleUrl,
-                                        MediaFormat format,
-                                        SubtitleOrigin currentSubtitleOrigin,
-                                        SubtitleState currentSubtitleState) {
-        String cachefilename = computeFilename(subtitleUrl,
+    private static File getCacheFile(final String subtitleUrl,
+                                    final MediaFormat format,
+                                    final SubtitleOrigin currentSubtitleOrigin,
+                                    final SubtitleState currentSubtitleState) {
+        final String cachefilename = computeFilename(subtitleUrl,
                                                 format,
                                                 currentSubtitleOrigin,
                                                 currentSubtitleState);
 
-        File cacheFile = new File(CACHE_DIR, cachefilename);
+        final File cacheFile = new File(CACHE_DIR, cachefilename);
 
         return cacheFile;
     }
 
     private static File findStoredCacheFile(
-            String remoteSubtitleUrl,
-            MediaFormat format,
-            SubtitleOrigin currentSubtitleOrigin
+            final String remoteSubtitleUrl,
+            final MediaFormat format,
+            final SubtitleOrigin currentSubtitleOrigin
     ) {
-        for (SubtitleState state : SubtitleState.values()) {
-            File subtitleFile = getCacheFile(
+        for (final SubtitleState state : SubtitleState.values()) {
+            final File subtitleFile = getCacheFile(
                     remoteSubtitleUrl,
                     format,
                     currentSubtitleOrigin,
@@ -466,25 +470,25 @@ public class SubtitleDeduplicator {
 
     @Nonnull
     private static String fallbackToStoredOrRemote(
-            @Nonnull String remoteSubtitleUrl,
-            @Nonnull MediaFormat format,
-            @Nonnull SubtitleOrigin origin
+            @Nonnull final String remoteSubtitleUrl,
+            @Nonnull final MediaFormat format,
+            @Nonnull final SubtitleOrigin origin
     ) {
-        File storedFile = findStoredCacheFile(
+        final File storedFile = findStoredCacheFile(
                 remoteSubtitleUrl,
                 format,
                 origin
         );
 
         if (storedFile != null) {
-            String previousStoredUri = buildLocalFileUri(storedFile);
+            final String previousStoredUri = buildLocalFileUri(storedFile);
             return previousStoredUri;
         }
 
         return remoteSubtitleUrl;
     }
 
-    private static boolean subtitleDownloadFails(String contentDownloaded) {
+    private static boolean subtitleDownloadFails(final String contentDownloaded) {
         if (null == contentDownloaded) {
             return true;
         } else {
@@ -492,7 +496,7 @@ public class SubtitleDeduplicator {
         }
     }
 
-    private static boolean subtitleStorageFails(String localUriAfterStores) {
+    private static boolean subtitleStorageFails(final String localUriAfterStores) {
         if (null == localUriAfterStores) {
             return true;
         } else {
@@ -500,13 +504,13 @@ public class SubtitleDeduplicator {
         }
     }
 
-    private static boolean ensureItsParentDirExist(File tempCacheFile) {
-        File parentDir = tempCacheFile.getParentFile();
+    private static boolean ensureItsParentDirExist(final File tempCacheFile) {
+        final File parentDir = tempCacheFile.getParentFile();
 
         if (parentDir.exists()) {
             return true;
         } else {
-            boolean success = parentDir.mkdirs();
+            final boolean success = parentDir.mkdirs();
             if (true == success) {
                 return true;
             } else {
@@ -516,19 +520,19 @@ public class SubtitleDeduplicator {
     }
 
     private static String writeDeduplicatedContentToCachefile(
-                                                String subtitleContent,
-                                                File tempCacheFile) {
-        String result = writeContentToFile(subtitleContent, tempCacheFile);
-        return result;
+                                            final String subtitleContent,
+                                            final File tempCacheFile) {
+        return writeContentToFile(subtitleContent, tempCacheFile);
     }
 
-    private static String writeContentToFile(String content, File tempFile) {
+    private static String writeContentToFile(final String content,
+                                             final File tempFile) {
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(tempFile), StandardCharsets.UTF_8))) {
             writer.write(content);
             return null;//ok
-        } catch (IOException e) {
-            String errorMessage = e.getMessage();
+        } catch (final IOException e) {
+            final String errorMessage = e.getMessage();
             System.err.println(TAG + ": Failed to write cache file: " + errorMessage);
             return errorMessage;
         }
