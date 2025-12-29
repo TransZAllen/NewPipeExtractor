@@ -391,7 +391,7 @@ public final class SubtitleDeduplicator {
     private static String checkAutoTranslateLanguage(final String subtitleUrl) {
         final String languageAutoTranslate = getAutoTranslateLanguage(subtitleUrl);
 
-        if(stringIsNullOrEmpty(languageAutoTranslate)) {
+        if (stringIsNullOrEmpty(languageAutoTranslate)) {
             return null;
         } else {
             return languageAutoTranslate;
