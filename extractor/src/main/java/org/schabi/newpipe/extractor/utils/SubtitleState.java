@@ -10,7 +10,7 @@ public enum SubtitleState {
 
     private final String id;
 
-    SubtitleState(@Nonnull String id) {
+    SubtitleState(@Nonnull final String id) {
         this.id = id;
     }
 
