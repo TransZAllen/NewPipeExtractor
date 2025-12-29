@@ -131,7 +131,7 @@ public final class SubtitleDeduplicator {
         int delay = initDelayValue(urlStr, initialDelayMillis);
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
             try {
-                Map<String, List<String>> headers = new HashMap<>();
+                final Map<String, List<String>> headers = new HashMap<>();
                 headers.put("Accept", Collections.singletonList("text/*"));
                 headers.put("Accept-Language", Collections.singletonList("en-US,en;q=0.9"));
                 final Response response = downloader.get(urlStr, headers);
@@ -207,9 +207,9 @@ public final class SubtitleDeduplicator {
 
         final Matcher matcher = getTtmlMatcher(subtitleContent);
 
-        Set<String> seen = new HashSet<>();
+        final Set<String> seen = new HashSet<>();
         while (matcher.find()) {
-            String key = getSubtitleKeyOfTtml(matcher);
+            final String key = getSubtitleKeyOfTtml(matcher);
 
             if (seen.contains(key)) {
                 return true;
@@ -261,8 +261,8 @@ public final class SubtitleDeduplicator {
 
         final Matcher matcher = getTtmlMatcher(subtitleContent);
 
-        Set<String> seen = new HashSet<>();
-        StringBuilder result = new StringBuilder();
+        final Set<String> seen = new HashSet<>();
+        final StringBuilder result = new StringBuilder();
 
         int lastIndex = 0;
         while (matcher.find()) {
@@ -306,7 +306,7 @@ public final class SubtitleDeduplicator {
         return pattern.matcher(subtitleContent);
     }
 
-    private static String getSubtitleKeyOfTtml(Matcher matcher) {
+    private static String getSubtitleKeyOfTtml(final Matcher matcher) {
         final String begin = matcher.group(1).trim();
         final String end = matcher.group(2).trim();
         final String content = matcher.group(3).trim().replaceAll("\\s+", " ");
