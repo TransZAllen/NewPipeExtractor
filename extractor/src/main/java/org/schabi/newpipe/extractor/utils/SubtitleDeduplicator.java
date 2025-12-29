@@ -327,7 +327,8 @@ public class SubtitleDeduplicator {
         if (null == writeDeduplicatedContentToCachefile(subtitleContent, cacheFile)) {
             return cacheFilePathForExoplayer;
         } else {
-            System.err.println(TAG + ": Failed to write cache file: " + cacheFile.getAbsolutePath());
+            System.err.println(TAG + ": Failed to write cache file: "
+                                + cacheFile.getAbsolutePath());
             return null;
         }
     }
@@ -530,7 +531,8 @@ public class SubtitleDeduplicator {
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(tempFile), StandardCharsets.UTF_8))) {
             writer.write(content);
-            return null;//ok
+            //ok
+            return null;
         } catch (final IOException e) {
             final String errorMessage = e.getMessage();
             System.err.println(TAG + ": Failed to write cache file: " + errorMessage);
