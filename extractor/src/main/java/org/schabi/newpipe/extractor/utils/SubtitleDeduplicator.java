@@ -165,11 +165,7 @@ public final class SubtitleDeduplicator {
     }
 
     private static boolean isAutoTranslateSubtitleUrl(final String urlStr) {
-        if (null != checkAutoTranslateLanguage(urlStr)) {
-            return true;
-        } else {
-            return false;
-        }
+        return (null != checkAutoTranslateLanguage(urlStr));
     }
 
     private static int initDelayValue(final String urlStr, final int inputDelay) {
@@ -498,19 +494,11 @@ public final class SubtitleDeduplicator {
     }
 
     private static boolean subtitleDownloadFails(final String contentDownloaded) {
-        if (null == contentDownloaded) {
-            return true;
-        } else {
-            return false;
-        }
+        return (null == contentDownloaded);
     }
 
     private static boolean subtitleStorageFails(final String localUriAfterStores) {
-        if (null == localUriAfterStores) {
-            return true;
-        } else {
-            return false;
-        }
+        return (null == localUriAfterStores);
     }
 
     private static boolean ensureItsParentDirExist(final File tempCacheFile) {
@@ -519,12 +507,8 @@ public final class SubtitleDeduplicator {
         if (parentDir.exists()) {
             return true;
         } else {
-            final boolean success = parentDir.mkdirs();
-            if (success) {
-                return true;
-            } else {
-                return false;
-            }
+            final boolean result = parentDir.mkdirs();
+            return result;
         }
     }
 
