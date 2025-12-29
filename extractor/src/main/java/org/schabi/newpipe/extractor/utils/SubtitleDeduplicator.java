@@ -42,13 +42,17 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException;
  *
  */
 
-public class SubtitleDeduplicator {
+public final class SubtitleDeduplicator {
     private static final String TAG = "SubtitleDeduplicator";
     public static final String LOCAL_SUBTITLE_URL_PREFIX = "file://";
 
     private static String subCacheDir = "subtitle_cache";
 
     private static File CACHE_DIR = null;
+
+    private SubtitleDeduplicator() {
+        // no instance
+    }
 
     // CACHE_DIR is /storage/emulated/0/Android/data/<package_name>/cache/{subCacheDir}
     public static void setCacheDirPath(final String path) {
