@@ -717,7 +717,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
         final List<SubtitlesStream> autoTranslatedSubtitles = new ArrayList<>();
         final JsonObject renderer = playerResponse.getObject("captions")
                 .getObject("playerCaptionsTracklistRenderer");
-        final JsonArray captionsArray = renderer.getArray("captionTracks");
+        //final JsonArray captionsArray = renderer.getArray("captionTracks");
+        final JsonArray captionsArray = playerCaptionsTracklistRenderer.getArray("captionTracks");
 
         // Generate list of languages available for auto-translations
         final List<String> translationLanguages;
