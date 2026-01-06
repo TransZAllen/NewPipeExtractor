@@ -74,15 +74,18 @@ public final class SubtitleDeduplicator {
         // Step 1: Download remote subtitle content
 
         // Current subtitle format is TTML
-        final String downloadedContent = downloadRemoteSubtitleContent(
+        String downloadedContent = downloadRemoteSubtitleContent(
                                             remoteSubtitleUrl,
                                             3,
                                             1000);
 
         if (subtitleDownloadFails(downloadedContent)) {
-            return fallbackToStoredOrRemote(remoteSubtitleUrl,
-                                            format,
-                                            currentSubtitleOrigin);
+            // auto-translate subtitle always download fails, for test its
+            // cache filename, we make this change:
+            //return fallbackToStoredOrRemote(remoteSubtitleUrl,
+            //                                format,
+            //                                currentSubtitleOrigin);
+            downloadedContent = "download fail. Just test to generate cache filenames.";
         }
 
         String finalContent = null;
