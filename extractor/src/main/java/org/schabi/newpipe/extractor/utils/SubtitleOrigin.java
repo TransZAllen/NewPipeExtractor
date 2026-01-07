@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 
 public enum SubtitleOrigin {
 
-    UPLOADED("uploaded"),
+    HUMAN_PROVIDED("human_provided"),
     AUTO_GENERATED("auto_generated"),
     AUTO_TRANSLATED("auto_translated");
 
