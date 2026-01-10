@@ -204,7 +204,8 @@ public final class SubtitleDeduplicator {
     }
 
     // Detects whether the subtitle contains duplicated <p> entries
-    // using the same strict comparison rules as deduplicateContent().
+    // using the same normalized (whitespace-trimmed) comparison rules
+    // as deduplicateContent().
     public static boolean containsDuplicatedEntries(final String subtitleContent) {
         if (stringIsNullOrEmpty(subtitleContent)) {
             return false;
@@ -254,10 +255,10 @@ public final class SubtitleDeduplicator {
         // Subtitle entries are considered duplicated only if:
         // 1) begin timestamp is exactly the same,
         // 2) end timestamp is exactly the same,
-        // 3) subtitle text content is exactly the same
-        //    (after trimming and normalizing whitespace).
+        // 3) subtitle text content is the same
+        //    after normalized (trimming and whitespace normalization).
         //
-        // This is a strict, character-level comparison.
+        // This is a normalized comparison (trimmed and whitespace-normalized).
         // No semantic analysis or fuzzy matching is performed.
 
         if (stringIsNullOrEmpty(subtitleContent)) {
