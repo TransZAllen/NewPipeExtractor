@@ -73,6 +73,12 @@ public final class SubtitleDeduplicator {
                                              final SubtitleOrigin currentSubtitleOrigin) {
         // *** Step 1: Download remote subtitle content
 
+        // - The remote subtitle is ALWAYS downloaded to ensure
+        //   the newest version is used.
+        // - Although cached subtitles are available, they may be
+        //   outdated since the video creator or the YouTube
+        //   platform can update them.
+
         // Current subtitle format is TTML
         final String downloadedContent = downloadRemoteSubtitleContent(
                                             remoteSubtitleUrl,
