@@ -69,4 +69,43 @@ public class SubtitleDeduplicatorTest {
 
         assertFalse(SubtitleDeduplicator.containsDuplicatedEntries(input));
     }
+
+    @Test
+    public void containsDuplicatedEntries_normalizeLeadingAndTrailingWhitespace_shouldConsiderAsSame() {
+        // Note:
+        // This test verifies that the deduplication logic normalizes
+        // leading and trailing whitespace, and considers the content
+        // as the same after this normalization, without modifying
+        // the original subtitle content.
+        String input =
+            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">  Hello world  </p>\n" +
+            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello world</p>";
+        assertTrue(SubtitleDeduplicator.containsDuplicatedEntries(input));
+    }
+
+    @Test
+    public void containsDuplicatedEntries_normalizeMultipleSpaces_shouldConsiderAsSingleSpace() {
+        // Note:
+        // This test verifies that the deduplication logic normalizes
+        // multiple consecutive spaces into a single space,
+        // considering the content as the same after this normalization,
+        // without modifying the original subtitle content.
+        String input =
+            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello    world</p>\n" +
+            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello world</p>";
+        assertTrue(SubtitleDeduplicator.containsDuplicatedEntries(input));
+    }
+
+    @Test
+    public void containsDuplicatedEntries_normalizeTabCharacter_shouldConsiderAsSpace() {
+        // Note:
+        // This test verifies that tab characters (\t) are normalized
+        // as spaces during deduplication, considering the content
+        // as the same after this normalization, without modifying
+        // the original subtitle content.
+        String input =
+            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello\tworld</p>\n" +
+            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello world</p>";
+        assertTrue(SubtitleDeduplicator.containsDuplicatedEntries(input));
+    }
 }
