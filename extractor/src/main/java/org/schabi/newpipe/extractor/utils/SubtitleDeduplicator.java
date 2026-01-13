@@ -315,7 +315,19 @@ public final class SubtitleDeduplicator {
     private static String getSubtitleKeyOfTtml(final Matcher matcher) {
         final String begin = matcher.group(1).trim();
         final String end = matcher.group(2).trim();
-        final String content = matcher.group(3).trim().replaceAll("\\s+", " ");
+
+        // Normalize subtitle text before comparison:
+        // - Leading and trailing whitespace is ignored
+        // - Consecutive whitespace characters (spaces, \t, \n, etc.)
+        //   are collapsed into a single space (' ')
+        //
+        // This is intentional: visually identical subtitles may differ only
+        // in whitespace due to formatting or extraction differences, and
+        // should be considered duplicates in such cases.
+        final String content = matcher.group(3)
+                                .trim()
+                                .replaceAll("\\s+", " ");
+
         final String key = begin + "|" + end + "|" + content;
         return key;
     }
