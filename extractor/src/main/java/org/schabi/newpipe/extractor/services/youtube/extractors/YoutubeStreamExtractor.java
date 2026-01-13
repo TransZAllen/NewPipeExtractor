@@ -742,7 +742,8 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             final String baseUrl = caption.getString("baseUrl");
             final String vssId = caption.getString("vssId");
 
-	    System.out.println("test10-00: " + "i==" + i + ",captionsArray.size()==" + captionsArray.size());
+            System.out.println("test10-00: " + "i==" + i
+                    + ",captionsArray.size()==" + captionsArray.size());
 
             if (languageCode == null || baseUrl == null || vssId == null) {
                 continue;
@@ -778,12 +779,13 @@ public class YoutubeStreamExtractor extends StreamExtractor {
             //if (caption.getBoolean("isTranslatable")) {
                 // not work
                 //for (final String tLanguageCode : translationLanguages) {
-		if ((captionsArray.size()-1) == i) {
+                if ((captionsArray.size() - 1) == i) {
                     final StreamingService service = getService();
                     final String tLanguageCode = service.getLocalization().getLanguageCode();
                     final String remoteAutoTranslatedUrl = cleanUrl + "&fmt=" + format.getSuffix()
                                     + "&tlang=" + tLanguageCode;
-                    System.out.println("test10-00: " + "remoteAutoTranslatedUrl==" + remoteAutoTranslatedUrl);
+                    System.out.println("test10-00: " + "remoteAutoTranslatedUrl=="
+                            + remoteAutoTranslatedUrl);
                     thisSubtitleOrigin = SubtitleDeduplicator.getSubtitleOrigin(
                                                                     false,
                                                                     true);
