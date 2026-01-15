@@ -92,6 +92,22 @@ public final class SubtitleDeduplicator {
             //                                format,
             //                                currentSubtitleOrigin);
             downloadedContent = "download fail. Just test to generate cache filenames.";
+        } else {
+            // temporary:
+            // use text content from stored cacheFile instead of remote subtitle url.
+            final File storedFile = findStoredCacheFile(
+                remoteSubtitleUrl,
+                format,
+                currentSubtitleOrigin
+            );
+
+            if (null != storedFile) {
+                try {
+                    downloadedContent = readFileToString(storedFile);
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         String finalContent = null;
