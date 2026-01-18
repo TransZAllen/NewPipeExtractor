@@ -334,8 +334,11 @@ public final class SubtitleDeduplicator {
 
         // Normalize subtitle text before comparison:
         // - Leading and trailing whitespace is ignored
-        // - Consecutive whitespace characters (spaces, \t, \n, etc.)
-        //   are collapsed into a single space (' ')
+        // - Runs of whitespace are collapsed into a single space (' ')
+        //
+        // Note:
+        // This operates on raw TTML text as received (before XML entity decoding).
+        // XML-encoded whitespace (e.g. &#x9;) is not decoded at this stage.
         //
         // This is intentional: visually identical subtitles may differ only
         // in whitespace due to formatting or extraction differences, and
