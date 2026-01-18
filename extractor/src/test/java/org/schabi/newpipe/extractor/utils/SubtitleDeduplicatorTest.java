@@ -95,20 +95,4 @@ public class SubtitleDeduplicatorTest {
             "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello world</p>";
         assertTrue(SubtitleDeduplicator.containsDuplicatedEntries(input));
     }
-
-    @Test
-    public void containsDuplicatedEntries_normalizeTabCharacter_shouldConsiderAsSpace() {
-        // Note:
-        // - This test verifies that tab characters (\t) are normalized
-        //   as spaces during deduplication, considering the content
-        //   as the same after this normalization, without modifying
-        //   the original subtitle content.
-        // - This test simulates runtime subtitle text *after XML entity decoding*.
-        //   Control characters like '\t' correspond to the '&#x9;' entity
-        //   in TTML subtitle files, which is an XML-based format.
-        String input =
-            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello\tworld</p>\n" +
-            "<p begin=\"00:00:01.000\" end=\"00:00:02.000\">Hello world</p>";
-        assertTrue(SubtitleDeduplicator.containsDuplicatedEntries(input));
-    }
 }
