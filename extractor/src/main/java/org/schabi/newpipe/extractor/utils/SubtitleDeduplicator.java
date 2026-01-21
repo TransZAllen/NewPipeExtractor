@@ -165,14 +165,16 @@ public final class SubtitleDeduplicator {
                 } else {
                     System.err.println(TAG + ": Attempt " + attempt
                                         + " failed with status: "
-                                        + response.responseCode());
+                                        + response.responseCode()
+                                        + " URL: " + urlStr);
                     if (response.responseCode() != 503 && response.responseCode() != 429) {
                         return null;
                     }
                 }
             } catch (IOException | ReCaptchaException e) {
                 System.err.println(TAG + ": Attempt " + attempt
-                                    + " failed: " + e.getMessage());
+                                    + " failed: " + e.getMessage()
+                                    + " URL: " + urlStr);
             }
             if (attempt < maxRetries) {
                 try {
@@ -185,7 +187,7 @@ public final class SubtitleDeduplicator {
             }
         }
         System.err.println(TAG + ": Failed to download subtitle after "
-                            + maxRetries + " attempts: " + urlStr);
+                            + maxRetries + " URL: " + urlStr);
         return null;
     }
 
