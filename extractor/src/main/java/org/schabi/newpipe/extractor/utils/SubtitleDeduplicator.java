@@ -46,6 +46,8 @@ public final class SubtitleDeduplicator {
     private static final String TAG = "SubtitleDeduplicator";
     public static final String LOCAL_SUBTITLE_URL_PREFIX = "file://";
 
+    private static final float BACKOFF_FACTOR = 1.0f;
+
     private static String subCacheDir = "subtitle_cache";
 
     private static File cacheDir = null;
@@ -153,7 +155,7 @@ public final class SubtitleDeduplicator {
             return null;
         }
         // if auto-translate language subtitle, use the bigger data.
-        int delay = initDelayValue(urlStr, initialDelayMillis);
+        int delay = resolveDelay(urlStr, initialDelayMillis);
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
             try {
                 final Map<String, List<String>> headers = new HashMap<>();
@@ -179,7 +181,7 @@ public final class SubtitleDeduplicator {
             if (attempt < maxRetries) {
                 try {
                     Thread.sleep(delay);
-                    delay *= 2;
+                    delay = adjustDelayAfterRetry(delay);
                 } catch (final InterruptedException ie) {
                     Thread.currentThread().interrupt();
                     return null;
@@ -195,16 +197,20 @@ public final class SubtitleDeduplicator {
         return (null != checkAutoTranslateLanguage(urlStr));
     }
 
-    private static int initDelayValue(final String urlStr, final int inputDelay) {
-        int initDelay = 0;
-
+    private static int resolveDelay(final String urlStr,
+                                    final int baseDelayMillis) {
         if (isAutoTranslateSubtitleUrl(urlStr)) {
-            initDelay = 6500;
+            // Auto-translated subtitles are observed to be less reliable.
+            // A separate delay path is kept to allow future tuning without
+            // affecting the common subtitle download flow.
+            return (baseDelayMillis + 1);
         } else {
-            initDelay = inputDelay;
+            return baseDelayMillis;
         }
+    }
 
-        return initDelay;
+    private static int adjustDelayAfterRetry(final int currentDelayMillis) {
+        return (int) (currentDelayMillis * BACKOFF_FACTOR);
     }
 
     public static boolean containsDuplicateTtmlEntries(final File subtitleFile) {
