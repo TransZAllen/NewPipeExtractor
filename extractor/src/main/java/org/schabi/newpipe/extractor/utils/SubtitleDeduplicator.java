@@ -426,10 +426,12 @@ public final class SubtitleDeduplicator {
             @Nonnull final SubtitleState state,
             @Nonnull final String extension
     ) {
+        final String filenamePartSeparator = "--";
+
         return videoId
-                + "--" + language
-                + "--" + origin.getId()
-                + "--" + state.getId()
+                + filenamePartSeparator + language
+                + filenamePartSeparator + origin.getId()
+                + filenamePartSeparator + state.getId()
                 + "." + extension;
     }
 
