@@ -437,16 +437,6 @@ public final class SubtitleDeduplicator {
                 + "." + extension;
     }
 
-    private static String checkAutoTranslateLanguage(final String subtitleUrl) {
-        final String languageAutoTranslate = getAutoTranslateLanguage(subtitleUrl);
-
-        if (stringIsNullOrEmpty(languageAutoTranslate)) {
-            return null;
-        } else {
-            return languageAutoTranslate;
-        }
-    }
-
     private static String getLanguageCode(final String remoteSubtitleUrl) {
         String languageCode = null;
         languageCode = YoutubeParsingHelper.extractLanguageCode(remoteSubtitleUrl);
