@@ -84,6 +84,7 @@ public final class SubtitleDeduplicator {
         // Current subtitle format is TTML
         String downloadedContent = downloadRemoteSubtitleContent(
                                             remoteSubtitleUrl,
+                                            currentSubtitleOrigin,
                                             3,
                                             1000);
 
@@ -147,6 +148,7 @@ public final class SubtitleDeduplicator {
     }
 
     private static String downloadRemoteSubtitleContent(final String urlStr,
+                                                        final SubtitleOrigin currentOrigin,
                                                         final int maxRetries,
                                                         final int initialDelayMillis) {
         final Downloader downloader = NewPipe.getDownloader();
@@ -155,7 +157,7 @@ public final class SubtitleDeduplicator {
             return null;
         }
         // if auto-translate language subtitle, use the bigger data.
-        int delay = resolveDelay(urlStr, initialDelayMillis);
+        int delay = resolveDelay(currentOrigin, initialDelayMillis);
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
             try {
                 final Map<String, List<String>> headers = new HashMap<>();
@@ -193,13 +195,13 @@ public final class SubtitleDeduplicator {
         return null;
     }
 
-    private static boolean isAutoTranslateSubtitleUrl(final String urlStr) {
-        return (null != checkAutoTranslateLanguage(urlStr));
+    private static boolean isAutoTranslateSubtitle(final SubtitleOrigin currentOrigin) {
+        return (currentOrigin == SubtitleOrigin.AUTO_TRANSLATED);
     }
 
-    private static int resolveDelay(final String urlStr,
+    private static int resolveDelay(final SubtitleOrigin currentOrigin,
                                     final int baseDelayMillis) {
-        if (isAutoTranslateSubtitleUrl(urlStr)) {
+        if (isAutoTranslateSubtitle(currentOrigin)) {
             // Auto-translated subtitles are observed to be less reliable.
             // A separate delay path is kept to allow future tuning without
             // affecting the common subtitle download flow.
