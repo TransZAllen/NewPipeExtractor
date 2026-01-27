@@ -73,6 +73,10 @@ public final class SubtitleDeduplicator {
     public static String checkAndDeduplicate(final String remoteSubtitleUrl,
                                              final MediaFormat format,
                                              final SubtitleOrigin currentSubtitleOrigin) {
+        if (!isCacheDirAvailable()) {
+            printCacheDirNotInitialized();
+            return remoteSubtitleUrl;
+        }
         // *** Step 1: Download remote subtitle content
 
         // - The remote subtitle is ALWAYS downloaded to ensure
@@ -145,6 +149,19 @@ public final class SubtitleDeduplicator {
         }
 
         return localSubtitleUri;
+    }
+
+    private static boolean isCacheDirAvailable() {
+        return ((cacheDir != null) && cacheDir.isDirectory());
+    }
+
+    private static void printCacheDirNotInitialized() {
+        final String errorMessage =
+                "SubtitleDeduplicator cache directory is not initialized. "
+              + "Fallback to original subtitle without deduplication. "
+              + "setCacheDirPath() should be called before using this class.";
+
+        System.err.println(TAG + ": " + errorMessage);
     }
 
     private static String downloadRemoteSubtitleContent(final String urlStr,
