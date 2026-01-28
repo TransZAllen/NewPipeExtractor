@@ -64,9 +64,7 @@ public final class SubtitleDeduplicator {
 
         cacheDir = new File(path, subCacheDir);
 
-        if (!cacheDir.exists()) {
-            cacheDir.mkdirs();
-        }
+        createDirIfNotExist(cacheDir);
     }
 
     // Returns either a remote subtitle URL or a local file URI (file://)
@@ -133,7 +131,19 @@ public final class SubtitleDeduplicator {
     }
 
     private static boolean isCacheDirAvailable() {
-        return ((cacheDir != null) && cacheDir.isDirectory());
+        if (null == cacheDir) {
+            return false;
+        }
+
+        return createDirIfNotExist(cacheDir);
+    }
+
+    private static boolean createDirIfNotExist(final File directory) {
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        return ((directory.exists()) && (directory.isDirectory()));
     }
 
     private static void printCacheDirNotInitialized() {
