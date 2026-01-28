@@ -482,8 +482,8 @@ public final class SubtitleDeduplicator {
         return getLanguageCode(subtitleUrl);
     }
 
-    // Extract the videoId (e.g., "lUDPjyfmJrs") from a subtitle URL
-    // (e.g., .../api/timedtext?v=lUDPjyfmJrs)
+    // Extract the videoId (e.g., "b7vmW_5HSpE") from a subtitle URL
+    // (e.g., .../api/timedtext?v=b7vmW_5HSpE)
     // for use in generating unique filenames.
     private static String getVideoId(final String remoteSubtitleUrl) {
         return YoutubeParsingHelper.extractVideoId(remoteSubtitleUrl);
