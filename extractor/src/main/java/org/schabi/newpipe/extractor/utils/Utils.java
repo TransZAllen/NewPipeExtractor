@@ -195,6 +195,31 @@ public final class Utils {
         }
     }
 
+    /**
+     * Extracts the query parameter value from a URL string
+     * based on the given key.
+     *
+     * @param key the query parameter key (e.g., "v", "lang", "tlang")
+     * @return a) the parameter value - if found,
+     *         b) null - if the key is not present,
+     *         c) "INVALID_URL" - if the URL is malformed,
+     *         d) "UNKNOWN_ERROR" - for other exceptions
+     */
+    public static String extractQueryParam(final String urlString,
+                                           final String key) {
+        try {
+            final URL url = stringToURL(urlString);
+            final String value = getQueryValue(url, key);
+            return value;
+        } catch (final MalformedURLException e) {
+            e.printStackTrace();
+            return "INVALID_URL";
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return "UNKNOWN_ERROR";
+        }
+    }
+
     public static boolean isHTTP(@Nonnull final URL url) {
         // Make sure it's HTTP or HTTPS
         final String protocol = url.getProtocol();
