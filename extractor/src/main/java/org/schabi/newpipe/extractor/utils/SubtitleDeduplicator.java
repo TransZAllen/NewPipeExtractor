@@ -68,6 +68,8 @@ public final class SubtitleDeduplicator {
     }
 
     // Returns either a remote subtitle URL or a local file URI (file://)
+    // @param remoteSubtitleUrl: A valid YouTube subtitle URL, expected to
+    //                           contain videoId and languageCode parameters.
     public static String checkAndDeduplicate(final String remoteSubtitleUrl,
                                              final MediaFormat format,
                                              final SubtitleOrigin currentSubtitleOrigin) {
